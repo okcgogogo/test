@@ -1,0 +1,42 @@
+package com.charlie.test.service;
+
+import com.charlie.test.dto.PaginationDTO;
+import com.charlie.test.dto.QuestionDTO;
+import com.charlie.test.mapper.QuestionMapper;
+import com.charlie.test.mapper.UserMapper;
+import com.charlie.test.model.Question;
+import com.charlie.test.model.User;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class QuestionService {
+
+    @Autowired
+    private QuestionMapper questionMapper;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    public PaginationDTO list(Integer page, Integer size){
+        PaginationDTO paginationDTO = new PaginationDTO();
+        int totalNums = questionMapper.queryTotalNums();
+
+        paginationDTO.setPagination(totalNums,page,size);
+        List<Question> questionList = questionMapper.queryQuestionList(paginationDTO.getOffset(),size);
+        List<QuestionDTO> questionDTOList = new ArrayList<>();
+        for (Question question : questionList) {
+            QuestionDTO questionDTO = new QuestionDTO();
+            User user = userMapper.getUserById(question.getCreator());
+            BeanUtils.copyProperties(question,questionDTO);
+            questionDTO.setUser(user);
+            questionDTOList.add(questionDTO);
+        }
+        paginationDTO.setQuestions(questionDTOList);
+        return paginationDTO;
+    }
+}
