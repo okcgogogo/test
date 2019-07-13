@@ -1,13 +1,16 @@
 package com.charlie.test.controller;
 
+import com.charlie.test.dto.QuestionDTO;
 import com.charlie.test.mapper.QuestionMapper;
 import com.charlie.test.model.Question;
 import com.charlie.test.model.User;
+import com.charlie.test.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -17,12 +20,26 @@ import javax.servlet.http.HttpServletRequest;
 public class PublishController {
 
     @Autowired
-    private QuestionMapper questionMapper;
+    private QuestionService questionService;
+
+
 
     @GetMapping("/publish")
     public String publish(){
         return "/publish";
     }
+
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable("id") Integer id,Model model){
+        QuestionDTO questionDTO = questionService.getById(id);
+        model.addAttribute("id",questionDTO.getId());
+        model.addAttribute("title",questionDTO.getTitle());
+        model.addAttribute("description",questionDTO.getDescription());
+        model.addAttribute("tag",questionDTO.getTag());
+        return "/publish";
+    }
+
+
 
     @PostMapping("/publish")
     public String doPublish(
@@ -30,8 +47,10 @@ public class PublishController {
             Model model,
             @RequestParam("title") String title,
             @RequestParam("description") String description,
-            @RequestParam("tag") String tag){
+            @RequestParam("tag") String tag,
+            @RequestParam("id") Integer id){
 
+       model.addAttribute("id",id);
        model.addAttribute("title",title);
        model.addAttribute("description",description);
        model.addAttribute("tag",tag);
@@ -54,13 +73,14 @@ public class PublishController {
             return "/publish";
         }else {
             Question question = new Question();
+            question.setId(id);
             question.setTitle(title);
             question.setDescription(description);
             question.setTag(tag);
             question.setGmtCreate(System.currentTimeMillis());
             question.setModified(System.currentTimeMillis());
             question.setCreator(user.getId());
-            questionMapper.saveQuestion(question);
+            questionService.saveOrUpdate(question);
             return "redirect:/";
         }
     }

@@ -2,9 +2,9 @@ package com.charlie.test.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.charlie.test.mapper.UserMapper;
 import com.charlie.test.model.User;
 import com.charlie.test.provider.GithubProvider;
+import com.charlie.test.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 /**
@@ -32,7 +33,7 @@ public class AuthController {
     @Value("${github.redirect_uri}")
     private String redirectUri;
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code") String code, @RequestParam(name = "state") String state,
@@ -56,7 +57,7 @@ public class AuthController {
             user1.setGmt_create(System.currentTimeMillis());
             user1.setGmt_modified(System.currentTimeMillis());
             user1.setAvatarUrl(user.getString("avatar_url"));
-            userMapper.insertUser(user1);
+            userService.createOrUpdateUser(user1);
             Cookie cookie = new Cookie("token",token);
             response.addCookie(cookie);
             return "redirect:/";
@@ -64,5 +65,13 @@ public class AuthController {
             // 登录失败 跳转首页
             return "redirect:/";
         }
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session,HttpServletResponse response) {
+        session.removeAttribute("user");
+        Cookie cookie = new Cookie("token",null);
+        response.addCookie(cookie);
+        return "redirect:/";
     }
 }

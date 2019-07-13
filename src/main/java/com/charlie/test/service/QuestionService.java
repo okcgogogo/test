@@ -66,4 +66,12 @@ public class QuestionService {
         questionDTO.setUser(user);
         return questionDTO;
     }
+
+    public void saveOrUpdate(Question question) {
+        if(question.getId() == null){
+            questionMapper.saveQuestion(question);
+        }else {
+            questionMapper.update(question);
+        }
+    }
 }
