@@ -35,3 +35,7 @@ body {
 .jumbotron {
     margin: 50px;
 }
+
+.username {
+    vertical-align: middle;
+}
