@@ -2,6 +2,8 @@ package com.charlie.test.service;
 
 import com.charlie.test.dto.PaginationDTO;
 import com.charlie.test.dto.QuestionDTO;
+import com.charlie.test.exception.CustomizeErrorCode;
+import com.charlie.test.exception.CustomizeException;
 import com.charlie.test.mapper.QuestionMapper;
 import com.charlie.test.mapper.UserMapper;
 import com.charlie.test.model.Question;
@@ -61,6 +63,9 @@ public class QuestionService {
     public QuestionDTO getById(Integer id) {
         QuestionDTO questionDTO = new QuestionDTO();
         Question question = questionMapper.getById(id);
+        if (question == null) {
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND.getMessage());
+        }
         BeanUtils.copyProperties(question,questionDTO);
         User user = userMapper.getUserById(question.getCreator());
         questionDTO.setUser(user);
@@ -71,7 +76,10 @@ public class QuestionService {
         if(question.getId() == null){
             questionMapper.saveQuestion(question);
         }else {
-            questionMapper.update(question);
+            int i = questionMapper.update(question);
+            if (i != 1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND.getMessage());
+            }
         }
     }
 }
