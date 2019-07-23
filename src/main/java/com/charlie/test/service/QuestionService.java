@@ -82,4 +82,8 @@ public class QuestionService {
             }
         }
     }
+
+    public void incrview(Integer id) {
+        questionMapper.updateViewCount(id);
+    }
 }
