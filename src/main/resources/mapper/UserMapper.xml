@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.charlie.test.mapper.UserMapper">
-    <select id="getUserById" resultType="User" parameterType="java.lang.Integer">
+    <select id="getUserById" resultType="User" parameterType="java.lang.Long">
      select * from user where id = #{id}
    </select>
 

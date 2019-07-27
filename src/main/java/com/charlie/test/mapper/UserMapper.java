@@ -13,7 +13,7 @@ public interface UserMapper {
     User getUserByToken(@Param("value") String value);
 
     //@Select("select * from user where id = #{value}")
-    User getUserById(Integer value);
+    User getUserById(Long value);
 
     @Select("select * from user where account_id = #{account_id}")
     User getUserByAccountId(@Param("account_id") String account_id);

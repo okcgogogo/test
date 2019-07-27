@@ -42,7 +42,7 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public PaginationDTO listByUserID(Integer id, Integer page, Integer size) {
+    public PaginationDTO listByUserID(Long id, Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
         int totalNums = questionMapper.queryTotalNumsByUserId(id);
 
@@ -60,11 +60,11 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public QuestionDTO getById(Integer id) {
+    public QuestionDTO getById(Long id) {
         QuestionDTO questionDTO = new QuestionDTO();
         Question question = questionMapper.getById(id);
         if (question == null) {
-            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND.getMessage());
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
         }
         BeanUtils.copyProperties(question,questionDTO);
         User user = userMapper.getUserById(question.getCreator());
@@ -78,12 +78,12 @@ public class QuestionService {
         }else {
             int i = questionMapper.update(question);
             if (i != 1){
-                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND.getMessage());
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
         }
     }
 
-    public void incrview(Integer id) {
+    public void incrview(Long id) {
         questionMapper.updateViewCount(id);
     }
 }

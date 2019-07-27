@@ -1,6 +1,8 @@
 package com.charlie.test.controller;
 
 import com.charlie.test.dto.QuestionDTO;
+import com.charlie.test.exception.CustomizeErrorCode;
+import com.charlie.test.exception.CustomizeException;
 import com.charlie.test.mapper.QuestionMapper;
 import com.charlie.test.model.Question;
 import com.charlie.test.model.User;
@@ -9,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,7 +29,7 @@ public class PublishController {
     }
 
     @GetMapping("/publish/{id}")
-    public String edit(@PathVariable("id") Integer id,Model model){
+    public String edit(@PathVariable("id") Long id,Model model){
         QuestionDTO questionDTO = questionService.getById(id);
         model.addAttribute("id",questionDTO.getId());
         model.addAttribute("title",questionDTO.getTitle());
@@ -48,8 +47,7 @@ public class PublishController {
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("tag") String tag,
-            @RequestParam("id") Integer id){
-
+            @RequestParam("id") Long id){
        model.addAttribute("id",id);
        model.addAttribute("title",title);
        model.addAttribute("description",description);
