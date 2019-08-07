@@ -39,3 +39,12 @@ body {
 .username {
     vertical-align: middle;
 }
+
+.comment {
+    margin: 10px 0;
+}
+
+.btn-comment{
+    float: right;
+    margin-bottom: 10px;
+}
