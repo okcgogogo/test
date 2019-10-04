@@ -9,6 +9,7 @@ import com.charlie.test.service.CommentService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,6 +29,11 @@ public class CommentController {
         if (user == null) {
             return ResultDTO.errorOf(CustomizeErrorCode.NO_LOGIN);
         }
+
+        if (commentDTO == null || StringUtils.isEmpty(commentDTO.getContent())) {
+            return ResultDTO.errorOf(CustomizeErrorCode.COMMENT_NOT_FOUND);
+        }
+
         Comment comment = new Comment();
         commentDTO.setGmtCreate(System.currentTimeMillis());
         commentDTO.setGmtModified(System.currentTimeMillis());

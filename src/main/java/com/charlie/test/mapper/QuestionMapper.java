@@ -1,5 +1,6 @@
 package com.charlie.test.mapper;
 
+import com.charlie.test.model.Comment;
 import com.charlie.test.model.Question;
 import org.apache.ibatis.annotations.*;
 
@@ -34,4 +35,7 @@ public interface QuestionMapper {
 
     @Update("update question set comment_count = comment_count + 1 where id = #{id}")
     int incCommentCount(Long id);
+
+    @Select("select * from comment where parent_id = #{parentId} and type = #{type} order by gmt_create desc ")
+    List<Comment> selectByParentId(Comment comment);
 }
